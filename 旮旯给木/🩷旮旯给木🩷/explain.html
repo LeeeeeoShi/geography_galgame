@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>旮旯给木 - 答题讲解</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="explain-container">
+    <!-- 讲解文本框（粉色） -->
+    <div class="explain-text" id="explainContent"></div>
+    <!-- 下一题按钮，返回答题页 -->
+    <a href="game.html" class="btn" id="nextBtn">下一题</a>
+  </div>
+
+  <script>
+    // 读取答题页传参的参数：对错、讲解、好感度、下一题索引
+    const searchParams = new URLSearchParams(window.location.search);
+    const isCorrect = searchParams.get("isCorrect") === "true";
+    const explain = decodeURIComponent(searchParams.get("explain"));
+    const favor = searchParams.get("favor");
+    const nextIndex = searchParams.get("nextIndex");
+    // 获取页面元素
+    const explainContent = document.getElementById("explainContent");
+    const nextBtn = document.getElementById("nextBtn");
+
+    // 拼接专属话术：小宝贝/小笨蛋 + 讲解 + 你好棒呀/你听懂了吗（讲解前后加爱心）
+    if (isCorrect) {
+      // 答对：小宝贝，你答对了❤️讲解❤️你好棒呀
+      explainContent.innerHTML = `<span class="correct-tip">小宝贝，你答对了</span>❤️${explain}❤️<span class="correct-tip">你好棒呀</span>`;
+    } else {
+      // 答错：小笨蛋，这题错了呀❤️讲解❤️你听懂了吗
+      explainContent.innerHTML = `<span class="error-tip">小笨蛋，这题错了呀</span>❤️${explain}❤️<span class="error-tip">你听懂了吗</span>`;
+    }
+
+    // 配置下一题按钮链接（传递好感度和下一题索引给答题页）
+    nextBtn.href = `game.html?favor=${favor}&nextIndex=${nextIndex}`;
+  </script>
+</body>
+</html>

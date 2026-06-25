@@ -1,0 +1,255 @@
+/* 全局重置与基础样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* 核心防溢出：内边距/边框不撑大元素 */
+  font-family: "Microsoft YaHei", 宋体, sans-serif;
+}
+
+/* 所有页面共用背景：浅粉色 */
+body {
+  background-color: #ffe6f2; /* 浅粉色 */
+  min-height: 100vh;
+  padding: 20px 0;
+}
+
+/* 开始页面专属：爱心背景（淡粉色爱心底纹） */
+.index-body {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath fill='%23ff69b4' fill-opacity='0.1' d='M10 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0-6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4z'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 通用标题样式（加爱心的标题） */
+.page-title {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 48px;
+  color: #ff1493; /* 深粉色 */
+}
+
+/* 通用按钮样式（所有按钮统一样式，无白色，完整显示文字） */
+.btn {
+  display: inline-block;
+  background-color: #ff69b4; /* 粉色按钮，无白色 */
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 18px 15px; /* 合理内边距，不挤压文字 */
+  font-size: 17px; /* 适中字体，保证可读性且不溢出 */
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s;
+  box-sizing: border-box;
+  word-wrap: break-word; /* 长文字自动换行 */
+  white-space: normal; /* 允许换行，不强制单行截断 */
+  line-height: 1.4; /* 加大行高，换行后文字不拥挤 */
+}
+.btn:hover {
+  background-color: #ff1493;
+}
+.btn:disabled {
+  background-color: #f8bbd0; /* 禁用状态浅粉色，无白色 */
+  cursor: not-allowed;
+}
+
+/* 开始页面容器 */
+.index-container {
+  text-align: center;
+  width: 100%;
+  padding: 0 20px;
+}
+
+/* 答题页核心容器（适配框加宽1.5倍，居中不溢出） */
+.game-container {
+  width: 98%; /* 加宽父容器，支撑粉色框1.5倍宽度 */
+  max-width: 1200px; /* 原800px*1.5=1200px，实现加宽1.5倍 */
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+/* 顶部操作按钮容器（攻略+返回主页面+重新开始） */
+.operation-btn-wrapper {
+  text-align: right;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  display: flex;
+  gap: 5px;
+}
+.operation-btn-wrapper .btn {
+  flex: 1;
+  min-width: 120px;
+}
+
+/* 答题页图片样式 */
+.game-logo {
+  display: block;
+  max-width: 300px;
+  width: 100%;
+  border-radius: 15px;
+  margin: 0 auto 20px;
+}
+
+/* 好感度显示样式（❤️地理试卷好感度：X❤️，加粗） */
+.favor-level {
+  text-align: center;
+  font-size: 24px;
+  color: #ff1493;
+  margin: 20px 0;
+  font-weight: bold;
+}
+
+/* 粉色文本框通用样式 - 核心：充裕空间+不隐藏内容，完整显示选项 */
+.pink-box {
+  background-color: #ffc0cb; /* 纯粉色背景，无任何白色间隙 */
+  border-radius: 15px;
+  padding: 40px 15px; /* 左右内边距适中，给选项留足显示空间 */
+  margin-bottom: 20px;
+  text-align: center;
+  width: 100%; /* 基于父容器max-width:1200px，实现1.5倍加宽 */
+  box-sizing: border-box;
+  min-height: 400px; /* 加大最小高度（从300→400），容纳所有选项不拥挤 */
+  border: none; /* 无白色边框 */
+  outline: none; /* 无白色外框 */
+  /* 移除overflow: hidden; 避免内容被隐藏，改为让框自动撑开 */
+}
+
+/* 题目文本样式（无白色背景，完整显示） */
+.question-text {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 35px;
+  word-wrap: break-word; /* 长题目自动换行，不截断 */
+  background: none; /* 确保无白色背景 */
+  padding: 0 10px; /* 题目左右留边，不贴框 */
+  line-height: 1.6; /* 行高适中，完整显示题目 */
+}
+
+/* 选项按钮容器 - 核心：充裕间距+完整显示，不截断选项 */
+.options-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 18px; /* 选项间距适中（从20→18），既不拥挤又能显示更多选项 */
+  margin: 0 auto 20px auto; /* 上下留边，左右居中，不贴框 */
+  width: 98%; /* 加宽容器（从95→98），给选项更多显示空间，不截断 */
+  padding: 0; /* 去掉左右padding，避免挤压选项 */
+  box-sizing: border-box;
+  background: none; /* 继承粉色框背景，无白色 */
+}
+
+/* 选项按钮 - 核心：完整显示文字，不截断，不溢出框 */
+.options-wrapper .btn {
+  width: 100%; /* 继承选项容器98%宽度，充裕显示空间 */
+  padding: 18px 15px; /* 上下内边距适中，文字不拥挤 */
+  background-color: #ff69b4; /* 按钮粉色，与框无白色间隔 */
+  box-sizing: border-box; /* 强制内边距不撑宽按钮，避免溢出 */
+  margin: 0; /* 去掉外边距，无叠加溢出 */
+  /* 确保文字完整换行，不截断 */
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+/* 答题讲解区（无白色部分，完整显示讲解内容） */
+.explain-area {
+  display: none;
+  margin: 20px auto; /* 左右居中，不溢出 */
+  width: 98%; /* 与选项容器一致，充裕显示空间 */
+  box-sizing: border-box;
+  background: none; /* 无白色背景 */
+  padding: 0 10px;
+}
+
+/* 讲解话术样式 */
+.correct-tip {
+  color: #ff1493;
+  font-weight: bold;
+  font-size: 20px;
+  word-wrap: break-word;
+  background: none;
+  line-height: 1.6;
+}
+.error-tip {
+  color: #ff4500;
+  font-weight: bold;
+  font-size: 20px;
+  word-wrap: break-word;
+  background: none;
+  line-height: 1.6;
+}
+
+/* 讲解内容文本样式 */
+.explain-text {
+  font-size: 18px;
+  color: #333;
+  margin: 20px 0;
+  line-height: 1.8;
+  word-wrap: break-word; /* 长讲解自动换行，不截断 */
+  background: none;
+}
+
+/* 下一题按钮容器（紧跟讲解，无多余间距） */
+.next-btn-wrapper {
+  text-align: center;
+  margin: 15px 0 0 0; /* 仅保留顶部15px间距，紧贴讲解内容，去掉所有下方间距 */
+  width: 100%;
+  background: none;
+}
+/* 下一题按钮样式微调 */
+.next-btn-wrapper .btn {
+  padding: 15px 30px; /* 按钮适中大小，不突兀 */
+  min-width: 180px;
+}
+
+/* 答题结束结果页样式 - 加宽1.5倍+无白色+完整显示内容 */
+.result-box {
+  background-color: #ffc0cb;
+  border-radius: 15px;
+  padding: 50px 20px;
+  text-align: center;
+  font-size: 24px;
+  color: #333;
+  margin: 30px 0;
+  display: none;
+  width: 100%;
+  box-sizing: border-box;
+  word-wrap: break-word; /* 长结果自动换行，不截断 */
+  min-height: 400px; /* 加大最小高度，完整显示结果内容 */
+  border: none; /* 无白色边框 */
+  /* 移除overflow: hidden; 避免结果内容被隐藏 */
+}
+.result-title {
+  font-size: 32px;
+  color: #ff1493;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* 攻略页面样式 - 框同步加宽1.5倍+无白色+完整显示知识点 */
+.guide-container {
+  width: 98%;
+  max-width: 1200px; /* 同步加宽1.5倍 */
+  margin: 0 auto;
+  padding: 20px;
+}
+.guide-list {
+  background-color: #ffc0cb; /* 纯粉色，无白色 */
+  border-radius: 15px;
+  padding: 40px 20px;
+  font-size: 18px;
+  color: #333;
+  line-height: 2;
+  width: 100%;
+  box-sizing: border-box;
+  word-wrap: break-word; /* 长知识点自动换行，不截断 */
+  border: none; /* 无白色边框 */
+  /* 移除overflow: hidden; 避免攻略内容被隐藏 */
+}
+.guide-back-btn {
+  text-align: center;
+  margin-top: 30px;
+  width: 100%;
+}

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>旮旯给木 - 地理答题</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- 顶部操作按钮：攻略+返回主页面+重新开始 -->
+    <div class="operation-btn-wrapper">
+      <a href="guide.html" class="btn">旮旯给木攻略</a>
+      <a href="index.html" class="btn">返回主页面</a>
+      <a href="game.html" class="btn">重新开始</a>
+    </div>
+
+    <!-- 答题页图片（请将图片重命名为logo.png放入同文件夹） -->
+    <img src="logo.png" alt="旮旯给木答题界面图" class="game-logo">
+
+    <!-- 好感度计数器：❤️地理试卷好感度：X❤️ -->
+    <div class="favor-level" id="favorLevel">❤️地理试卷好感度：0❤️</div>
+
+    <!-- 题目区域（粉色框，初始显示） -->
+    <div class="pink-box" id="questionBox">
+      <div class="question-text" id="questionContent"></div>
+      <div class="options-wrapper" id="optionsWrapper"></div>
+    </div>
+
+    <!-- 讲解区域（粉色框，初始隐藏，内含下一题按钮，紧跟讲解） -->
+    <div class="explain-area pink-box" id="explainArea">
+      <div id="tipText"></div>
+      <div class="explain-text" id="explainText"></div>
+      <!-- 下一题按钮：紧跟讲解内容下方 -->
+      <div class="next-btn-wrapper" id="nextBtnWrapper">
+        <button class="btn" onclick="nextQuestion()">下一题</button>
+      </div>
+    </div>
+
+    <!-- 答题结束结果区域（初始隐藏） -->
+    <div class="result-box" id="resultBox"></div>
+  </div>
+
+  <script>
+    // 20道地理选择题题库（题干+选项+正确答案+讲解）
+    const geographyQuestions = [
+      {question: "世界上面积最大的洲是？", options: ["亚洲", "非洲", "欧洲", "南美洲"], correctAnswer: 0, explain: "亚洲总面积约4457.9万平方公里，是世界上面积最大、人口最多的大洲。"},
+      {question: "世界上最长的河流是？", options: ["长江", "亚马逊河", "尼罗河", "密西西比河"], correctAnswer: 2, explain: "尼罗河全长约6670公里，发源于非洲东北部布隆迪高原，自南向北注入地中海。"},
+      {question: "中国的首都是？", options: ["上海", "北京", "广州", "深圳"], correctAnswer: 1, explain: "北京是中国的政治、文化、国际交往和科技创新中心，是中华人民共和国的首都。"},
+      {question: "世界上最大的海洋是？", options: ["太平洋", "大西洋", "印度洋", "北冰洋"], correctAnswer: 0, explain: "太平洋总面积约1.8134亿平方公里，占世界海洋总面积的一半左右，是世界上最大、最深的海洋。"},
+      {question: "被称为“世界屋脊”的是？", options: ["青藏高原", "巴西高原", "东非高原", "南非高原"], correctAnswer: 0, explain: "青藏高原平均海拔4000米以上，是世界最高的高原，拥有“世界屋脊”和“第三极”的美誉。"},
+      {question: "世界上最大的沙漠是？", options: ["塔克拉玛干沙漠", "撒哈拉沙漠", "阿拉伯沙漠", "澳大利亚沙漠"], correctAnswer: 1, explain: "撒哈拉沙漠位于非洲北部，面积约932万平方公里，是世界上最大的热带沙漠，也是世界第二大沙漠。"},
+      {question: "中国面积最大的省级行政区是？", options: ["四川省", "新疆", "内蒙古", "西藏"], correctAnswer: 1, explain: "新疆维吾尔自治区面积约166.49万平方公里，是中国陆地面积最大的省级行政区，约占中国国土总面积的六分之一。"},
+      {question: "世界上最大的半岛是？", options: ["阿拉伯半岛", "印度半岛", "中南半岛", "拉布拉多半岛"], correctAnswer: 0, explain: "阿拉伯半岛位于亚洲西南部，面积约322万平方公里，是世界上最大的半岛，以热带沙漠气候为主。"},
+      {question: "被称为“千岛之国”的是？", options: ["日本", "印度尼西亚", "菲律宾", "马尔代夫"], correctAnswer: 1, explain: "印度尼西亚由约17508个岛屿组成，是世界上最大的群岛国家，被称为“千岛之国”，横跨亚洲和大洋洲。"},
+      {question: "世界上最深的湖泊是？", options: ["贝加尔湖", "里海", "苏必利尔湖", "维多利亚湖"], correctAnswer: 0, explain: "贝加尔湖位于俄罗斯东西伯利亚南部，最深处达1637米，是世界上最深、蓄水量最大的淡水湖。"},
+      {question: "中国的母亲河是？", options: ["黄河", "长江", "珠江", "黑龙江"], correctAnswer: 0, explain: "黄河是中华文明最主要的发源地，孕育了华夏文明，被中国人称为“母亲河”，全长约5464公里，是中国第二长河。"},
+      {question: "世界上面积最小的国家是？", options: ["梵蒂冈", "摩纳哥", "瑙鲁", "图瓦卢"], correctAnswer: 0, explain: "梵蒂冈国土面积仅0.44平方公里，是世界上面积最小、人口最少的主权国家，位于意大利罗马城西北角。"},
+      {question: "被称为“花园城市”的国家是？", options: ["新加坡", "瑞士", "荷兰", "新西兰"], correctAnswer: 0, explain: "新加坡环境整洁优美，城市绿化覆盖率高，基础设施完善，被公认为“花园城市”，是东南亚的一个岛国。"},
+      {question: "中国最长的河流是？", options: ["黄河", "长江", "珠江", "澜沧江"], correctAnswer: 1, explain: "长江全长约6300公里，是中国第一长河，也是亚洲第一长河、世界第三长河，自西向东注入东海。"},
+      {question: "世界上最大的淡水湖群是？", options: ["五大湖", "贝加尔湖群", "东非大湖群", "青藏高原湖群"], correctAnswer: 0, explain: "北美五大湖是世界上最大的淡水湖群，包括苏必利尔湖、密歇根湖等五个湖泊，总蓄水量约22.8万亿立方米。"},
+      {question: "被称为“火山之国”的是？", options: ["日本", "印度尼西亚", "冰岛", "智利"], correctAnswer: 1, explain: "印度尼西亚位于环太平洋火山地震带上，境内共有约400座火山，其中活火山约120座，被称为“火山之国”。"},
+      {question: "中国五岳中的东岳是？", options: ["华山", "泰山", "嵩山", "恒山"], correctAnswer: 1, explain: "中国五岳分别是东岳泰山、西岳华山、南岳衡山、北岳恒山、中岳嵩山，泰山位于山东泰安，有“五岳之首”的美誉。"},
+      {question: "世界上跨经度最广的大洲是？", options: ["亚洲", "非洲", "南极洲", "北美洲"], correctAnswer: 2, explain: "南极洲位于地球最南端，跨越了所有的经度（360°），是世界上跨经度最广、平均海拔最高、最寒冷的大洲。"},
+      {question: "被称为“世界雨极”的是？", options: ["乞拉朋齐", "夏威夷", "亚马逊平原", "刚果盆地"], correctAnswer: 0, explain: "印度的乞拉朋齐年平均降水量极高，曾创下年降水量26461毫米的纪录，被称为“世界雨极”，主要受地形雨影响。"},
+      {question: "中国面积最大的岛屿是？", options: ["台湾岛", "海南岛", "崇明岛", "舟山岛"], correctAnswer: 0, explain: "台湾岛面积约3.58万平方公里，是中国面积最大的岛屿，位于中国东南沿海的大陆架上，隔台湾海峡与福建省相望。"}
+    ];
+
+    // 全局变量初始化
+    let currentQuestionIndex = 0; // 当前题目索引
+    let currentFavor = 0; // 当前好感度（支持负数，无下限）
+
+    // 获取页面所有核心元素
+    const favorElement = document.getElementById("favorLevel");
+    const questionElement = document.getElementById("questionContent");
+    const optionsElement = document.getElementById("optionsWrapper");
+    const questionBox = document.getElementById("questionBox");
+    const explainArea = document.getElementById("explainArea");
+    const tipText = document.getElementById("tipText");
+    const explainText = document.getElementById("explainText");
+    const nextBtnWrapper = document.getElementById("nextBtnWrapper");
+    const resultBox = document.getElementById("resultBox");
+
+    // 页面加载完成后初始化第一题
+    window.onload = function() {
+      initPageLayout();
+      renderCurrentQuestion(currentQuestionIndex);
+    };
+
+    /**
+     * 页面布局初始化：隐藏讲解区、下一题按钮、结果区，显示题目区
+     */
+    function initPageLayout() {
+      explainArea.style.display = "none";
+      nextBtnWrapper.style.display = "block"; // 跟随讲解区一起控制，无需单独隐藏
+      resultBox.style.display = "none";
+      questionBox.style.display = "block";
+    }
+
+    /**
+     * 渲染当前题目（题干+选项，均添加爱心装饰）
+     * @param {number} index - 题目索引
+     */
+    function renderCurrentQuestion(index) {
+      // 清空原有选项，避免叠加
+      optionsElement.innerHTML = "";
+      
+      const currentQuestion = geographyQuestions[index];
+      if (!currentQuestion) return;
+
+      // 渲染题干（前后加爱心）
+      questionElement.innerHTML = `❤️${currentQuestion.question}❤️`;
+
+      // 渲染选项（每个选项前后加爱心，绑定点击事件）
+      currentQuestion.options.forEach((option, optIndex) => {
+        const optionBtn = document.createElement("button");
+        optionBtn.className = "btn";
+        optionBtn.innerHTML = `❤️${option}❤️`;
+        optionBtn.onclick = function() {
+          checkAnswerIsCorrect(optIndex, currentQuestion.correctAnswer, currentQuestion.explain);
+        };
+        optionsElement.appendChild(optionBtn);
+      });
+    }
+
+    /**
+     * 验证答案对错，更新好感度，显示讲解内容
+     * @param {number} userAnswerIndex - 用户选择的选项索引
+     * @param {number} correctAnswerIndex - 正确答案索引
+     * @param {string} explainContent - 题目讲解内容
+     */
+    function checkAnswerIsCorrect(userAnswerIndex, correctAnswerIndex, explainContent) {
+      // 禁用所有选项按钮，防止重复点击
+      const allOptionBtns = document.querySelectorAll(".options-wrapper .btn");
+      allOptionBtns.forEach(btn => btn.disabled = true);
+
+      // 判断对错，更新好感度
+      let isAnswerCorrect = false;
+      if (userAnswerIndex === correctAnswerIndex) {
+        currentFavor += 3; // 答对+3分
+        isAnswerCorrect = true;
+      } else {
+        currentFavor -= 3; // 答错-3分
+        isAnswerCorrect = false;
+      }
+
+      // 更新页面好感度显示
+      updateFavorDisplay();
+
+      // 显示讲解内容和下一题按钮
+      showQuestionExplain(isAnswerCorrect, explainContent);
+    }
+
+    /**
+     * 更新好感度显示（前后加爱心）
+     */
+    function updateFavorDisplay() {
+      favorElement.innerHTML = `❤️地理试卷好感度：${currentFavor}❤️`;
+    }
+
+    /**
+     * 显示题目讲解内容（区分对错话术）
+     * @param {boolean} isCorrect - 答案是否正确
+     * @param {string} explainContent - 讲解内容
+     */
+    function showQuestionExplain(isCorrect, explainContent) {
+      // 显示讲解区
+      explainArea.style.display = "block";
+
+      // 渲染对错话术和讲解内容（均添加爱心装饰）
+      if (isCorrect) {
+        tipText.className = "correct-tip";
+        tipText.innerHTML = "小宝贝，你答对了❤️❤️你好棒呀";
+      } else {
+        tipText.className = "error-tip";
+        tipText.innerHTML = "小笨蛋，这题错了呀❤️❤️你听懂了吗";
+      }
+      explainText.innerHTML = `❤️${explainContent}❤️`;
+    }
+
+    /**
+     * 下一题逻辑：切换题目索引，重置布局，渲染新题
+     */
+    function nextQuestion() {
+      // 增加题目索引
+      currentQuestionIndex++;
+
+      // 判断是否答完所有题目
+      if (currentQuestionIndex >= geographyQuestions.length) {
+        showFinalResult();
+        return;
+      }
+
+      // 重置页面布局，渲染新题
+      initPageLayout();
+      renderCurrentQuestion(currentQuestionIndex);
+    }
+
+    /**
+     * 显示答题最终结果（区分及格/不及格）
+     */
+    function showFinalResult() {
+      // 隐藏题目区和讲解区，显示结果区
+      questionBox.style.display = "none";
+      explainArea.style.display = "none";
+      resultBox.style.display = "block";
+
+      // 渲染最终结果内容
+      const passScore = 36;
+      let resultContent = "";
+      if (currentFavor >= passScore) {
+        resultContent = `
+          <div class="result-title">❤️恭喜你❤️</div>
+          <p>成功攻略的女主《地理试卷》</p>
+          <p>最终地理试卷好感度：❤️${currentFavor}❤️</p>
+          <a href="game.html" class="btn">重新开始答题</a>
+          <a href="index.html" class="btn">返回主页面</a>
+        `;
+      } else {
+        resultContent = `
+          <div class="result-title">❤️你攻略失败了❤️</div>
+          <p>最终地理试卷好感度：❤️${currentFavor}❤️</p>
+          <p style="font-size: 20px; margin: 20px 0;">此处省略 114514 个嫌弃脸 cg</p>
+          <a href="game.html" class="btn">重新开始答题</a>
+          <a href="index.html" class="btn">返回主页面</a>
+        `;
+      }
+      resultBox.innerHTML = resultContent;
+    }
+  </script>
+</body>
+</html>
